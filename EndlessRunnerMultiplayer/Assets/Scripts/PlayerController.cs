@@ -71,7 +71,7 @@ public class PlayerController : NetworkBehaviour
 
             GUILayout.EndArea();
             
-        }  else
+        }else
         {
             short newIndex = (short)GUILayout.SelectionGrid(
                 networkManager.playerPrefabIndex, networkManager.playerNames, 3);
@@ -259,7 +259,7 @@ public class PlayerController : NetworkBehaviour
                 {
                     CmdAddLevelSection(Random.Range(4, 7), lastEndPosition);
                 }
-                else if(medium)
+                else if(medium || hard)
                 {
                     CmdAddLevelSection(Random.Range(7, networkManager.spawnPrefabs.Count-1), lastEndPosition);
                 }
@@ -271,8 +271,12 @@ public class PlayerController : NetworkBehaviour
 
         if (mainCamera)
         {
-            mainCamera.transform.SetPositionAndRotation(transform.position + new Vector3(0.0f, 4.0f, -3.0f), Quaternion.identity);
-            mainCamera.transform.LookAt(transform.position + new Vector3(0.0f, 2.0f, 0.0f), Vector3.up);
+            if(isLocalPlayer)
+            {
+                mainCamera.transform.SetPositionAndRotation(transform.position + new Vector3(0.0f, 6.0f, -5.0f), Quaternion.identity);
+                mainCamera.transform.LookAt(transform.position + new Vector3(0.0f, 2.0f, 0.0f), Vector3.up);
+            }
+          
         }
 
         if (nameLabel)

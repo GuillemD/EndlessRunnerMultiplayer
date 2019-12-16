@@ -6,7 +6,7 @@ using UnityEngine.Networking.Match;
 using UnityEngine.Networking.Types;
 using UnityEngine.UI;
 
-public class Matchmaking : MonoBehaviour
+public class Matchmaking : NetworkBehaviour
 {
     NetworkID networkId;
 
@@ -60,7 +60,6 @@ public class Matchmaking : MonoBehaviour
         {
             Debug.Log("OnMatchCreate failed");
         }
-
 
     }
 

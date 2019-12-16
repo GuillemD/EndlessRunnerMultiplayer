@@ -91,10 +91,38 @@ public class CustomNetworkManager : NetworkManager
 
     public void AddObstacleForEnemy(int id, GameObject enemyPlayer)
     {
+        int rand = 0;
+
+        rand = Random.Range(0, 3);
         if(enemyPlayer != null)
         {
-            GameObject obstacle = Instantiate(spawnPrefabs[id], (enemyPlayer.gameObject.transform.position + (Vector3.forward * 15)), Quaternion.identity);
-            NetworkServer.Spawn(obstacle);
+            switch(rand)
+            {
+                case 0:
+                    {
+                        GameObject obstacle = Instantiate(spawnPrefabs[id], (enemyPlayer.gameObject.transform.position + (new Vector3(0, 1, 10))), Quaternion.identity);
+                        NetworkServer.Spawn(obstacle);
+                        break;
+                    }
+                case 1:
+                    {
+                        GameObject obstacle = Instantiate(spawnPrefabs[id], (enemyPlayer.gameObject.transform.position + (new Vector3(1.5f, 1, 10))), Quaternion.identity);
+                        NetworkServer.Spawn(obstacle);
+                        break;
+                    }
+                case 2:
+                    {
+                        GameObject obstacle = Instantiate(spawnPrefabs[id], (enemyPlayer.gameObject.transform.position + (new Vector3(-1.5f, 1, 10))), Quaternion.identity);
+                        NetworkServer.Spawn(obstacle);
+                        break;
+                    }
+                default:
+                    {
+                        GameObject obstacle = Instantiate(spawnPrefabs[id], (enemyPlayer.gameObject.transform.position + (new Vector3(0, 1, 10))), Quaternion.identity);
+                        NetworkServer.Spawn(obstacle);
+                        break;
+                    }
+            }   
         }
     }
 
