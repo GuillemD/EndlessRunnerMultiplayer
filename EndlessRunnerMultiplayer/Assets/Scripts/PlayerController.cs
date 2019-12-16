@@ -18,12 +18,16 @@ public class PlayerController : NetworkBehaviour
     GameObject Spawn;
     GameObject Spawn2;
 
-    bool run = false;
-    bool is_jumping = false;
-    bool db_jump = false;
-    bool easy = true;
-    bool medium = false;
-    bool hard = false;
+    private bool run = false;
+    private bool is_jumping = false;
+    private bool db_jump = false;
+    private bool easy = true;
+    private bool medium = false;
+    private bool hard = false;
+
+    private enum PlayerStates { left, center, right};
+
+    PlayerStates states;
 
     float COUNTDOWN_DIFFICULTY_CHANGE = 20f;
 
@@ -129,11 +133,14 @@ public class PlayerController : NetworkBehaviour
         {
             lastEndPosition = new Vector3(-9.2f,0,23.7f);
             gameObject.tag = "Player1";
+            states = PlayerStates.center;
+            
         }
         else if(Vector3.Distance(transform.position, Spawn2.transform.position) < 1.0f)
         {
             lastEndPosition = new Vector3(8.5f, 0, 24);
             gameObject.tag = "Player2";
+            states = PlayerStates.center;
         }
     }
 
@@ -152,8 +159,34 @@ public class PlayerController : NetworkBehaviour
             {
                 run = true;
             }
+            if(Input.GetKeyDown("a") && states != PlayerStates.left)
+            {
+                if(states == PlayerStates.center)
+                {
+                    transform.Translate(new Vector3(-1.3f, 0, 0));
+                    states = PlayerStates.left;
+                }
+                else if(states == PlayerStates.right)
+                {
+                    transform.Translate(new Vector3(-1.3f, 0, 0));
+                    states = PlayerStates.center;
+                }
+            }
+            if (Input.GetKeyDown("d") && states != PlayerStates.right)
+            {
+                if (states == PlayerStates.center)
+                {
+                    transform.Translate(new Vector3(1.3f, 0, 0));
+                    states = PlayerStates.right;
+                }
+                else if (states == PlayerStates.left)
+                {
+                    transform.Translate(new Vector3(1.3f, 0, 0));
+                    states = PlayerStates.center;
+                }
+            }
             //increase difficulty
-            if(run && !medium)
+            if (run && !hard)
             {
                 COUNTDOWN_DIFFICULTY_CHANGE -= Time.deltaTime;
 
@@ -228,7 +261,7 @@ public class PlayerController : NetworkBehaviour
                 }
                 else if(medium)
                 {
-                    CmdAddLevelSection(Random.Range(7, networkManager.spawnPrefabs.Count), lastEndPosition);
+                    CmdAddLevelSection(Random.Range(7, networkManager.spawnPrefabs.Count-1), lastEndPosition);
                 }
                 
                 lastEndPosition += new Vector3(0,0,30);
