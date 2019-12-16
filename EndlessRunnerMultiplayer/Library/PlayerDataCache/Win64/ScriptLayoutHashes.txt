@@ -1,6 +1,6 @@
 Win64
 PlayerPath?
-C:/Users/guillemdrdv/Documents/GitHub/EndlessRunnerMultiplayer/EndlessRunnerMultiplayer/Net Test 3.exe
+C:/Users/guillemaj/Documents/GitHub/EndlessRunnerMultiplayer/EndlessRunnerMultiplayer/Net Test 3.exe
 SceneListBegin?
 Assets/Scenes/MainScene.unity
 SceneListEnd?
