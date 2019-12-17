@@ -59,7 +59,7 @@ public class Matchmaking : NetworkBehaviour
                 Text text = matchEntry.GetComponentInChildren<Text>();
                 text.text = "Match: " + matchName;
                 Button button = matchEntry.GetComponentInChildren<Button>();
-                button.onClick.AddListener(delegate { OnJoinMatchClicked(networkId); });
+                button.onClick.AddListener(delegate { OnJoinMatchClicked(match); });
             }
         }
         else
@@ -91,10 +91,10 @@ public class Matchmaking : NetworkBehaviour
 
     }
 
-    public void OnJoinMatchClicked(UnityEngine.Networking.Types.NetworkID networkId)
+    public void OnJoinMatchClicked(MatchInfoSnapshot match)
     {
         NetworkManager.singleton.StartMatchMaker();
-        NetworkManager.singleton.matchMaker.JoinMatch(networkId, "", "", "", 0, 0, OnMatchJoin);
+        NetworkManager.singleton.matchMaker.JoinMatch(match.networkId, "", "", "", 0, 0, OnMatchJoin);
 
     }
 

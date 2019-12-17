@@ -300,14 +300,14 @@ public class PlayerController : NetworkBehaviour
                 
                 lastEndPosition += new Vector3(0,0,30);
             }
-
+            if (mainCamera)
+            {
+                mainCamera.transform.SetPositionAndRotation(transform.position + new Vector3(0.0f, 6.0f, -5.0f), Quaternion.identity);
+                mainCamera.transform.LookAt(transform.position + new Vector3(0.0f, 2.0f, 0.0f), Vector3.up);
+            }
         }
 
-        if (mainCamera)
-        {
-            mainCamera.transform.SetPositionAndRotation(transform.position + new Vector3(0.0f, 6.0f, -5.0f), Quaternion.identity);
-            mainCamera.transform.LookAt(transform.position + new Vector3(0.0f, 2.0f, 0.0f), Vector3.up);
-        }
+        
 
         if (nameLabel)
         {

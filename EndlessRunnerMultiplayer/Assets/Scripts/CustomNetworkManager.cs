@@ -23,9 +23,7 @@ public class CustomNetworkManager : NetworkManager
 
     public string[] playerNames = new string[] { "Boy", "Girl", "Robot" };
 
-   
-    
-
+  
     public override void OnStartServer()
     {
         NetworkServer.RegisterHandler(MsgTypes.PlayerPrefabSelect, OnPrefabResponse);
