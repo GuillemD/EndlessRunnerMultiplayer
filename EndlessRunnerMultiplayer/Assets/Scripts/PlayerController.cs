@@ -12,11 +12,14 @@ public class PlayerController : NetworkBehaviour
 
     const float RUNNING_SPEED = 10.0f;
     const float DISTANCE_TO_SPAWN_SECTION = 50f;
+    const float THRESHOLD_DISTANCE = 150f;
 
     Vector3 lastEndPosition;
 
     GameObject Spawn;
     GameObject Spawn2;
+
+    private float distance_to_player = 0f;
 
     private bool run = false;
     private bool is_jumping = false;
@@ -24,6 +27,11 @@ public class PlayerController : NetworkBehaviour
     private bool easy = true;
     private bool medium = false;
     private bool hard = false;
+
+    private bool won = false;
+    private bool lost = false;
+
+    private GUIStyle guiStyle = new GUIStyle(); 
 
     private enum PlayerStates { left, center, right};
 
@@ -70,6 +78,31 @@ public class PlayerController : NetworkBehaviour
             }
 
             GUILayout.EndArea();
+
+            guiStyle.fontSize = 25;
+            GUI.contentColor = Color.black;
+            GUI.Label(new Rect(Screen.width /2-60, 10, 250, Screen.height - 20), distance_to_player.ToString("N2") + " / 150.00" , guiStyle);
+
+            if(won)
+            {
+                GUILayout.BeginArea(new Rect(Screen.width / 2 - 50, Screen.height / 2, 100, 100));
+
+                if(GUILayout.Button("Won"))
+                {
+                    //End game
+                }
+                GUILayout.EndArea();
+            }
+            if(lost)
+            {
+                GUILayout.BeginArea(new Rect(Screen.width / 2 - 50, Screen.height / 2, 100, 100));
+
+                if (GUILayout.Button("Lost"))
+                {
+                    //End game
+                }
+                GUILayout.EndArea();
+            }
             
         }else
         {
@@ -154,6 +187,7 @@ public class PlayerController : NetworkBehaviour
             rb = GetComponent<Rigidbody>();
             float verticalAxis = 0.5f;
 
+            CheckDistance();
             //start running (temp)
             if (Input.GetKeyDown("r"))
             {
@@ -271,12 +305,8 @@ public class PlayerController : NetworkBehaviour
 
         if (mainCamera)
         {
-            if(isLocalPlayer)
-            {
-                mainCamera.transform.SetPositionAndRotation(transform.position + new Vector3(0.0f, 6.0f, -5.0f), Quaternion.identity);
-                mainCamera.transform.LookAt(transform.position + new Vector3(0.0f, 2.0f, 0.0f), Vector3.up);
-            }
-          
+            mainCamera.transform.SetPositionAndRotation(transform.position + new Vector3(0.0f, 6.0f, -5.0f), Quaternion.identity);
+            mainCamera.transform.LookAt(transform.position + new Vector3(0.0f, 2.0f, 0.0f), Vector3.up);
         }
 
         if (nameLabel)
@@ -320,5 +350,51 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDestroy()
     {
+    }
+
+    private void CheckDistance()
+    {
+        if(gameObject.tag == "Player1")
+        {
+            GameObject enemy = GameObject.FindGameObjectWithTag("Player2");
+            if (enemy != null)
+                distance_to_player = transform.position.z - enemy.transform.position.z;
+            else
+                distance_to_player = transform.position.z - Spawn2.transform.position.z;
+
+            if (distance_to_player >= THRESHOLD_DISTANCE)
+            {
+                won = true;
+                run = false;
+            }
+            else if (distance_to_player <= -THRESHOLD_DISTANCE)
+            {
+                lost = true;
+                run = false;
+            }
+               
+
+
+        }
+        else if(gameObject.tag == "Player2")
+        {
+            GameObject enemy = GameObject.FindGameObjectWithTag("Player1");
+            if (enemy != null)
+                distance_to_player = transform.position.z - enemy.transform.position.z;
+            else
+                distance_to_player = transform.position.z - Spawn.transform.position.z;
+
+            if (distance_to_player >= THRESHOLD_DISTANCE)
+            {
+                won = true;
+                run = false;
+            }
+            else if (distance_to_player <= -THRESHOLD_DISTANCE)
+            {
+                lost = true;
+                run = false;
+            }
+                
+        }
     }
 }
