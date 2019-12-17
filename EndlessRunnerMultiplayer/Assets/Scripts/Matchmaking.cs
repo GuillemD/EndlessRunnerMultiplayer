@@ -3,26 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
-using UnityEngine.Networking.Types;
 using UnityEngine.UI;
 
 public class Matchmaking : NetworkBehaviour
 {
-    NetworkID networkId;
 
+
+    public Text newMatchName;
+    float time = 9999.0f;
 
     public RectTransform listOfMatches;
     public GameObject matchEntryPrefab;
 
-    public Text newMatchName;
-
-    float time = 9999.0f;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     private void Update()
@@ -44,7 +36,7 @@ public class Matchmaking : NetworkBehaviour
     {
         Debug.Log("OnCreateMatchClicked" + newMatchName.text);
         NetworkManager.singleton.StartMatchMaker();
-        NetworkManager.singleton.matchMaker.CreateMatch(newMatchName.text, 4, true, "", "", "", 0, 0, OnMatchCreate);
+        NetworkManager.singleton.matchMaker.CreateMatch(newMatchName.text, 2, true, "", "", "", 0, 0, OnMatchCreate);
     }
 
     public void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
@@ -63,7 +55,7 @@ public class Matchmaking : NetworkBehaviour
 
     }
 
-    public void OnJoinMatchClicked(NetworkID networkId)
+    public void OnJoinMatchClicked(UnityEngine.Networking.Types.NetworkID networkId)
     {
         NetworkManager.singleton.StartMatchMaker();
         NetworkManager.singleton.matchMaker.JoinMatch(networkId, "", "", "", 0, 0, OnMatchJoin);
@@ -86,6 +78,7 @@ public class Matchmaking : NetworkBehaviour
 
     public void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matches)
     {
+        NetworkManager.singleton.StopMatchMaker();
 
         if (success)
         {
@@ -102,16 +95,16 @@ public class Matchmaking : NetworkBehaviour
             {
                 MatchInfoSnapshot match = matches[i];
                 string matchName = match.name;
-                NetworkID networkID = match.networkId;
+                UnityEngine.Networking.Types.NetworkID networkId = match.networkId;
 
-                GameObject gameObject = Instantiate(matchEntryPrefab, listOfMatches);
-                RectTransform rect = gameObject.GetComponent<RectTransform>();
+                GameObject matchEntry = GameObject.Instantiate(matchEntryPrefab, listOfMatches);
+                RectTransform rect = matchEntry.GetComponent<RectTransform>();
 
-                rect.position = new Vector2(10, listOfMatches.position.y - (float)i * 50.0f);
+                rect.localPosition = new Vector3(10.0f, -(float)1 * 50.0f, 0.0f);
 
-                Text text = gameObject.GetComponentInChildren<Text>();
+                Text text = matchEntry.GetComponentInChildren<Text>();
                 text.text = "Match: " + matchName;
-                Button button = gameObject.GetComponentInChildren<Button>();
+                Button button = matchEntry.GetComponentInChildren<Button>();
                 button.onClick.AddListener(delegate { OnJoinMatchClicked(networkId); });
             }
         }
